@@ -15,6 +15,7 @@ dotenv.config();
 import connectDB from "./config/dbConfig.js";
 import __404_err_page from "./middleware/notfound.js";
 import errorHandlerMiddleware from "./middleware/errorHandler.js";
+import privateRoute from "./routes/privateRoute.js";
 
 const app = express();
 const MongoDBStore = MongodbSession(session);
@@ -49,6 +50,8 @@ app.use(express.urlencoded({ extended: true }));
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
+
+app.use("/api/routes/private", privateRoute);
 
 app.get("/", (req, res, next) => {
   res.status(StatusCodes.OK).send("Hello World");
