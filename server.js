@@ -13,6 +13,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 import connectDB from "./config/dbConfig.js";
+import __404_err_page from "./middleware/notfound.js";
+import errorHandlerMiddleware from "./middleware/errorHandler.js";
 
 const app = express();
 const MongoDBStore = MongodbSession(session);
@@ -38,7 +40,6 @@ app.use(
 app.use(xss());
 app.use(cors());
 app.use(helmet());
-//app.use(logger("dev"));
 app.use(express.json());
 app.use(mongoSanitize());
 app.use(cookieParser());
@@ -50,8 +51,11 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 app.get("/", (req, res, next) => {
-  res.send("Hello World");
+  res.status(StatusCodes.OK).send("Hello World");
 });
+
+app.use(errorHandlerMiddleware);
+app.use("*", __404_err_page);
 
 const Port = process.env.PORT || 3000;
 
